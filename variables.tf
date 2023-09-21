@@ -25,6 +25,7 @@ variable "create_route53_records" {
 
 variable "hosted_zone_id" {
   type        = string
+  default     = ""
   description = "The Route 53 hosted zone ID of the domain name"
 }
 
@@ -32,6 +33,10 @@ variable "evaluate_target_health" {
   type        = bool
   default     = false
   description = "Allow Route53 to determine whether to respond to DNS queries by checking the health of the record set"
+}
+
+variable "kms_permissions" {
+  type = list(string)
 }
 
 /**

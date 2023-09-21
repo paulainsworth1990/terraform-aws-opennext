@@ -4,6 +4,9 @@ variable "default_tags" {
   default     = {}
 }
 
+variable "kms_permissions" {
+  type = list(string)
+}
 
 variable "log_group_name" {
   type = string

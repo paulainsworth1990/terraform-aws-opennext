@@ -5,6 +5,7 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 4.0"
+      configuration_aliases = [aws.global]
     }
   }
 }
@@ -139,6 +140,7 @@ module "revalidation_queue" {
   default_tags = var.default_tags
 
   aws_account_id            = data.aws_caller_identity.current.account_id
+  kms_permissions           = var.kms_permissions
   revalidation_function_arn = module.revalidation_function.lambda_function.arn
 }
 
@@ -189,6 +191,7 @@ module "cloudfront_logs" {
   log_group_name  = "${var.prefix}-cloudfront-logs"
   log_bucket_name = "${var.prefix}-cloudfront-logs"
   retention       = 365
+  kms_permissions = var.kms_permissions
 }
 
 /**
@@ -198,6 +201,9 @@ module "cloudfront" {
   source       = "./modules/opennext-cloudfront"
   prefix       = "${var.prefix}-cloudfront"
   default_tags = var.default_tags
+  providers = {
+    aws.global = aws.global
+  }
 
   logging_bucket_domain_name    = module.cloudfront_logs.logs_s3_bucket.bucket_regional_domain_name
   assets_origin_access_identity = module.assets.cloudfront_origin_access_identity.cloudfront_access_identity_path
